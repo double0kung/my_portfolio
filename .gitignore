@@ -1,0 +1,5 @@
+# This is a comment. Comments in .gitignore start with a hash (#).
+# Each line is a pattern that matches files and directories to ignore.
+
+# Ignore the .env file
+.env
