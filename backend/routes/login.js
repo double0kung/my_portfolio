@@ -12,7 +12,11 @@ router.post('/', async (req, res) => {
     const user = await collection.findOne({ email });
 
     if (user && await bcrypt.compare(accessCode, user.accessCode)) {
-      res.send('Login successful');
+      if (user.expiresAt > new Date()) {
+        res.send('Login successful');
+      } else {
+        res.status(401).send('Access code expired');
+      }
     } else {
       res.status(401).send('Invalid email or access code');
     }
