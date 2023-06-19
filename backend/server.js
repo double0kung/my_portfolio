@@ -1,9 +1,13 @@
-require('dotenv').config(); //retrieve user and password
+//retrieve user and password
+require('dotenv').config();
+console.log(process.env.DB_USER); // Should print MongoDB username
+console.log(process.env.DB_PASS); // Should print MongoDB password
 
 const express = require('express');
-const userRoutes = require('./routes/users');
+
+//Connect to MongoDB server
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = "mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@beginner.hqgdqg8.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -12,8 +16,11 @@ const client = new MongoClient(uri, {
   }
 });
 
+
+
 const app = express(); //create express app
 const port = 3000; //set port to listen to 3000
+const userRoutes = require('./routes/users');
 
 // Body parsing for JSON
 app.use(express.json());
