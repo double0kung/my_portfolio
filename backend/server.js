@@ -1,49 +1,26 @@
-//retrieve user and password
-require('dotenv').config();
-console.log(process.env.DB_USER); // Should print MongoDB username
-console.log(process.env.DB_PASS); // Should print MongoDB password
-
+// Import the required modules
+require('dotenv').config(); 
 const express = require('express');
-
-//Connect to MongoDB server
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@beginner.hqgdqg8.mongodb.net/?retryWrites=true&w=majority";
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
-
-
-const app = express(); //create express app
-const port = 3000; //set port to listen to 3000
 const userRoutes = require('./routes/users');
+const loginRoutes = require('./routes/login'); // Make sure to have this file
+const mongoose = require('mongoose'); 
 
-// Body parsing for JSON
+const app = express(); 
+const port = process.env.PORT || 3000; 
+
+// Middleware for parsing JSON bodies from HTTP requests
 app.use(express.json());
 
-//routes
+// Use the routes
 app.use('/users', userRoutes);
+app.use('/login', loginRoutes); // Make sure to have this route
 
-//server connection
-async function run() {
-  try {
-    // Connect the client to the server
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Connected to MongoDB!");
-
-    app.listen(port, () => {
-      console.log(`Server is running at http://localhost:${port}`)
-    });
-
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-run().catch(console.dir);
+// Connect to MongoDB and start the server
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@beginner.hqgdqg8.mongodb.net/?retryWrites=true&w=majority`, 
+{ useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`)
+  });
+})
+.catch(err => console.log(err));
